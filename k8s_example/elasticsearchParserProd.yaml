@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: es-parser
+  namespace: kube-logging
+  labels:
+    app: es-parser
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: es-parser
+  template:
+    metadata:
+      labels:
+        app: es-parser
+    spec:
+      containers:
+      - name: es-parser
+        image: neurodatalab/es-parser:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 1000m
+          requests:
+            cpu: 100m
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "python run.py && while true; do sleep 30; done;" ]
+        env:
+        - name: ELASTICSEARCH_URL
+          value: "http://elasticsearch:9200"
+        - name: PARSER_LOG_LEVEL
+          value: "20"
+        - name: PSQL_HOST
+          value: "34.68.109.94"
+        - name: DUMP_MODE
+          value: "False"
+        - name: DUMP_USE
+          value: "False"
+        - name: PSQL_DB
+          value: "es_parser_81"

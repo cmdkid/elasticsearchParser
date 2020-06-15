@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: es-parser-dump
+  namespace: kube-logging
+  labels:
+    app: es-parser-dump
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: es-parser-dump
+  template:
+    metadata:
+      labels:
+        app: es-parser-dump
+    spec:
+      containers:
+      - name: es-parser-dump
+        image: neurodatalab/es-parser:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 1000m
+          requests:
+            cpu: 100m
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "python dump_elastic_data.py && while true; do sleep 30; done;" ]
+        env:
+        - name: ELASTICSEARCH_URL
+          value: "http://elasticsearch:9200"
+        - name: PARSER_LOG_LEVEL
+          value: "20"

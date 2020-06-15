@@ -1,2 +1,4 @@
 venv
 .idea
+docker_push.sh
+ed_dump.tar.gz
